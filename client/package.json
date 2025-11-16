@@ -32,6 +32,7 @@
     "dev": "vite",
     "build": "tsc --incremental && vite build --logLevel warn",
     "build:fast": "vite build --logLevel error",
+    "build:prod": "vite build --logLevel error",
     "preview": "vite preview"
   }
 }

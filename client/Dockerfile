@@ -6,21 +6,22 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies with optimizations for low CPU
-# Install all deps (including devDependencies for build tools)
-RUN npm ci --prefer-offline --no-audit --progress=false
+# Install dependencies with aggressive memory optimizations
+# Remove cache immediately after install to save memory
+RUN npm ci --prefer-offline --no-audit --progress=false && \
+    npm cache clean --force
 
 # Copy source code
 COPY . .
 
-# Build the application with optimized settings for 1 core
-# Reduce memory, limit workers, disable parallel processing
-ENV NODE_OPTIONS="--max-old-space-size=768" \
+# Build with extreme memory constraints for 1GB RAM server
+# Skip TypeScript checking, use minimal memory
+ENV NODE_OPTIONS="--max-old-space-size=400 --no-warnings" \
     VITE_BUILD_TARGET="production" \
     NODE_ENV="production"
 
-# Build with limited resources
-RUN npm run build
+# Use fast build (skip tsc check) to reduce memory usage
+RUN npm run build:fast
 
 # Production stage with nginx
 FROM nginx:alpine

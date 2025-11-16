@@ -22,24 +22,15 @@ export default defineConfig({
     },
   },
   build: {
-    // Optimize for low-end CPU (1 core)
-    minify: 'esbuild', // esbuild is faster than terser
-    sourcemap: false, // Disable sourcemaps to save time
-    chunkSizeWarningLimit: 1000,
+    // Optimize for 1 core / 1GB RAM server
+    minify: 'esbuild', // esbuild is faster and uses less memory than terser
+    sourcemap: false, // Disable sourcemaps to save time and memory
+    chunkSizeWarningLimit: 1500,
+    reportCompressedSize: false, // Skip compression report to save time
+    cssCodeSplit: true, // Split CSS to reduce single file size
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Split vendor chunks to reduce memory usage
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'mui-vendor': ['@mui/material', '@mui/icons-material'],
-        },
-      },
-    },
-    // Reduce memory usage
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console logs in production
-        drop_debugger: true,
+        manualChunks: undefined, // Disable manual chunks to reduce memory
       },
     },
   },
@@ -47,5 +38,6 @@ export default defineConfig({
     // Optimize esbuild for single core
     logLevel: 'error',
     legalComments: 'none',
+    drop: ['console', 'debugger'], // Remove console/debugger in production
   },
 });
