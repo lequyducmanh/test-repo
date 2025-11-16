@@ -7,9 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies with optimizations for low CPU
-# Use fewer workers and disable optional dependencies
-RUN npm ci --prefer-offline --no-audit --progress=false \
-    --omit=dev --omit=optional || npm ci --prefer-offline --no-audit
+# Install all deps (including devDependencies for build tools)
+RUN npm ci --prefer-offline --no-audit --progress=false
 
 # Copy source code
 COPY . .
