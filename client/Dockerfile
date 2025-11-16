@@ -15,13 +15,16 @@ RUN npm ci --prefer-offline --no-audit --progress=false && \
 COPY . .
 
 # Build with extreme memory constraints for 1GB RAM server
-# Skip TypeScript checking, use minimal memory
-ENV NODE_OPTIONS="--max-old-space-size=400 --no-warnings" \
+# Skip TypeScript checking, use minimal memory, disable minification
+ENV NODE_OPTIONS="--max-old-space-size=512 --no-warnings" \
     VITE_BUILD_TARGET="production" \
     NODE_ENV="production"
 
-# Use fast build (skip tsc check) to reduce memory usage
-RUN npm run build:fast
+# Use fast build (skip tsc check, no minification) to reduce memory and time
+RUN npm run build:fast && \
+    echo "Build completed, cleaning up..." && \
+    rm -rf node_modules/.vite && \
+    rm -rf node_modules/.cache
 
 # Production stage with nginx
 FROM nginx:alpine

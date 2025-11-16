@@ -23,11 +23,11 @@ export default defineConfig({
   },
   build: {
     // Optimize for 1 core / 1GB RAM server
-    minify: 'esbuild', // esbuild is faster and uses less memory than terser
+    minify: false, // Disable minification to speed up build significantly
     sourcemap: false, // Disable sourcemaps to save time and memory
-    chunkSizeWarningLimit: 1500,
+    chunkSizeWarningLimit: 2000,
     reportCompressedSize: false, // Skip compression report to save time
-    cssCodeSplit: true, // Split CSS to reduce single file size
+    cssCodeSplit: false, // Keep CSS in one file to reduce processing
     rollupOptions: {
       output: {
         manualChunks: undefined, // Disable manual chunks to reduce memory
