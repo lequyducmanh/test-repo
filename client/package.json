@@ -30,7 +30,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc --incremental && vite build --logLevel warn",
+    "build:fast": "vite build --logLevel error",
     "preview": "vite preview"
   }
 }

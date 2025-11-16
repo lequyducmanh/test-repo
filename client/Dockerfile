@@ -7,13 +7,20 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies with optimizations for low CPU
-RUN npm ci --prefer-offline --no-audit --progress=false
+# Use fewer workers and disable optional dependencies
+RUN npm ci --prefer-offline --no-audit --progress=false \
+    --omit=dev --omit=optional || npm ci --prefer-offline --no-audit
 
 # Copy source code
 COPY . .
 
-# Build the application with memory limits
-ENV NODE_OPTIONS="--max-old-space-size=1024"
+# Build the application with optimized settings for 1 core
+# Reduce memory, limit workers, disable parallel processing
+ENV NODE_OPTIONS="--max-old-space-size=768" \
+    VITE_BUILD_TARGET="production" \
+    NODE_ENV="production"
+
+# Build with limited resources
 RUN npm run build
 
 # Production stage with nginx
