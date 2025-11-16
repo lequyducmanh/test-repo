@@ -6,13 +6,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies with optimizations for low CPU
+RUN npm ci --prefer-offline --no-audit --progress=false
 
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the application with memory limits
+ENV NODE_OPTIONS="--max-old-space-size=1024"
 RUN npm run build
 
 # Production stage with nginx

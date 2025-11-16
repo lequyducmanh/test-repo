@@ -18,6 +18,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
 
   server:
     build:
@@ -34,6 +42,7 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DB_NAME: mydb
+      NODE_OPTIONS: "--max-old-space-size=512"
     depends_on:
       postgres:
         condition: service_healthy
@@ -42,6 +51,14 @@ services:
     volumes:
       - ./server/src:/app/src
       - /app/node_modules
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 768M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
 
   client:
     build:
@@ -60,6 +77,14 @@ services:
     volumes:
       - ./client/src:/app/src
       - /app/node_modules
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
 
 volumes:
   postgres_data:
